@@ -71,7 +71,7 @@ class TextSystem(object):
                 ),
                 img_crop_list[bno],
             )
-            logger.debug(f"{bno}, {rec_res[bno]}")
+            # logger.debug(f"{bno}, {rec_res[bno]}")
         self.crop_image_res_index += bbox_num
 
     def __call__(self, img, cls=True, slice={}):
@@ -116,10 +116,10 @@ class TextSystem(object):
             end = time.time()
             time_dict["all"] = end - start
             return None, None, time_dict
-        else:
-            logger.debug(
-                "dt_boxes num : {}, elapsed : {}".format(len(dt_boxes), elapse)
-            )
+        # else:
+        #     logger.debug(
+        #         "dt_boxes num : {}, elapsed : {}".format(len(dt_boxes), elapse)
+        #     )
         img_crop_list = []
 
         dt_boxes = sorted_boxes(dt_boxes)
@@ -134,9 +134,9 @@ class TextSystem(object):
         if self.use_angle_cls and cls:
             img_crop_list, angle_list, elapse = self.text_classifier(img_crop_list)
             time_dict["cls"] = elapse
-            logger.debug(
-                "cls num  : {}, elapsed : {}".format(len(img_crop_list), elapse)
-            )
+            # logger.debug(
+            #     "cls num  : {}, elapsed : {}".format(len(img_crop_list), elapse)
+            # )
         if len(img_crop_list) > 1000:
             logger.debug(
                 f"rec crops num: {len(img_crop_list)}, time and memory cost may be large."
@@ -144,7 +144,7 @@ class TextSystem(object):
 
         rec_res, elapse = self.text_recognizer(img_crop_list)
         time_dict["rec"] = elapse
-        logger.debug("rec_res num  : {}, elapsed : {}".format(len(rec_res), elapse))
+        # logger.debug("rec_res num  : {}, elapsed : {}".format(len(rec_res), elapse))
         if self.args.save_crop_res:
             self.draw_crop_rec_res(self.args.crop_res_save_dir, img_crop_list, rec_res)
         filter_boxes, filter_rec_res = [], []
@@ -209,7 +209,7 @@ def main(args):
     cpu_mem, gpu_mem, gpu_util = 0, 0, 0
     _st = time.time()
     count = 0
-    for idx, image_file in enumerate(image_file_list):
+    for idx, image_file in tqdm(enumerate(image_file_list),desc='预测中',total=len(image_file_list)):
         img, flag_gif, flag_pdf = check_and_read(image_file)
         if not flag_gif and not flag_pdf:
             img = cv2.imread(image_file)
@@ -228,19 +228,19 @@ def main(args):
             dt_boxes, rec_res, time_dict = text_sys(img)
             elapse = time.time() - starttime
             total_time += elapse
-            if len(imgs) > 1:
-                logger.debug(
-                    str(idx)
-                    + "_"
-                    + str(index)
-                    + "  Predict time of %s: %.3fs" % (image_file, elapse)
-                )
-            else:
-                logger.debug(
-                    str(idx) + "  Predict time of %s: %.3fs" % (image_file, elapse)
-                )
-            for text, score in rec_res:
-                logger.debug("{}, {:.3f}".format(text, score))
+            # if len(imgs) > 1:
+            #     logger.debug(
+            #         str(idx)
+            #         + "_"
+            #         + str(index)
+            #         + "  Predict time of %s: %.3fs" % (image_file, elapse)
+            #     )
+            # else:
+            #     logger.debug(
+            #         str(idx) + "  Predict time of %s: %.3fs" % (image_file, elapse)
+            #     )
+            # for text, score in rec_res:
+            #     logger.debug("{}, {:.3f}".format(text, score))
 
             res = [
                 {
@@ -291,11 +291,11 @@ def main(args):
                     os.path.join(draw_img_save_dir, os.path.basename(save_file)),
                     draw_img[:, :, ::-1],
                 )
-                logger.debug(
-                    "The visualized image saved in {}".format(
-                        os.path.join(draw_img_save_dir, os.path.basename(save_file))
-                    )
-                )
+                # logger.debug(
+                #     "The visualized image saved in {}".format(
+                #         os.path.join(draw_img_save_dir, os.path.basename(save_file))
+                #     )
+                # )
 
     logger.info("The predict total time is {}".format(time.time() - _st))
     if args.benchmark:
