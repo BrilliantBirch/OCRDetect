@@ -15,7 +15,7 @@
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
-
+from tqdm import tqdm
 import numpy as np
 
 import os
@@ -50,7 +50,7 @@ def draw_det_res(dt_boxes, config, img, img_name, save_path):
         os.makedirs(save_path)
     save_path = os.path.join(save_path, os.path.basename(img_name))
     cv2.imwrite(save_path, src_im)
-    logger.info("The detected Image saved in {}".format(save_path))
+    # logger.info("The detected Image saved in {}".format(save_path))
 
 
 @paddle.no_grad()
@@ -82,8 +82,8 @@ def main():
 
     model.eval()
     with open(save_res_path, "wb") as fout:
-        for file in get_image_file_list(config["Global"]["infer_img"]):
-            logger.info("infer_img: {}".format(file))
+        for file in tqdm(get_image_file_list(config["Global"]["infer_img"]),desc='处理中：'):
+            # logger.info("infer_img: {}".format(file))
             with open(file, "rb") as f:
                 img = f.read()
                 data = {"image": img}

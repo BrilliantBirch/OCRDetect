@@ -4,7 +4,7 @@ Global:
   epoch_num: 500
   log_smooth_window: 20
   print_batch_step: 10
-  save_model_dir: ./output/ch_PP-OCR_V3_det/
+  save_model_dir: ./output/ch_PP-OCR_V3_det_0812/
   save_epoch_step: 100
   eval_batch_step:
   - 0
@@ -12,10 +12,10 @@ Global:
   cal_metric_during_train: false
   pretrained_model: ./pretrain_models/ch_PP-OCRv3_det_distill_train/student.pdparams
   checkpoints: null
-  save_inference_dir: null
+  save_inference_dir: ./inference/det/ch_PP-OCRv3_det_0812
   use_visualdl: false
-  infer_img: E:\\OCRSceneImage\\Trk
-  save_res_path: ./OcrResult/PPOCR_V3_CH_det_719
+  infer_img: D:\\data\\Detect\\TrkContainDetect
+  save_res_path: ./inference_result/det/PPOCR_V3_CH_det_0812
   distributed: true
 
 Architecture:
@@ -47,9 +47,9 @@ Optimizer:
   beta1: 0.9
   beta2: 0.999
   lr:
-    name: Cosine
-    learning_rate: 0.001
-    warmup_epoch: 2
+    name: Const
+    learning_rate: 0.0005
+    warmup_epoch: 0
   regularizer:
     name: L2
     factor: 0
@@ -65,8 +65,8 @@ Metric:
 Train:
   dataset:
     name: SimpleDataSet
-    data_dir: E:/OCRSceneImage/TrainData/Trk/det/train
-    label_file_list: [E:/OCRSceneImage/TrainData/Trk/det/train.txt]
+    data_dir: E:\\OCRSceneImage\\TrainData\\OCR\\det\\train
+    label_file_list: [E:\OCRSceneImage\TrainData\OCR\det\train.txt]
     ratio_list: [1.0]
     transforms:
     - DecodeImage:
@@ -128,8 +128,8 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: E:/OCRSceneImage/TrainData/Trk/det/val
-    label_file_list: [E:/OCRSceneImage/TrainData/Trk/det/val.txt]
+    data_dir: E:\\OCRSceneImage\\TrainData\\OCR\\det\\val
+    label_file_list: [E:\\OCRSceneImage\\TrainData\\OCR\\det\\val.txt]
     transforms:
     - DecodeImage:
         img_mode: BGR

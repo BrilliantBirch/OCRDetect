@@ -35,6 +35,7 @@ from ppocr.modeling.architectures import build_model
 from ppocr.postprocess import build_post_process
 from ppocr.utils.save_load import load_model
 from ppocr.utils.utility import get_image_file_list
+from tqdm import tqdm
 import tools.program as program
 
 
@@ -123,9 +124,10 @@ def main():
 
     infer_imgs = config["Global"]["infer_img"]
     infer_list = config["Global"].get("infer_list", None)
-    with open(save_res_path, "w") as fout:
-        for file in get_image_file_list(infer_imgs, infer_list=infer_list):
-            logger.info("infer_img: {}".format(file))
+    with open(save_res_path, "w",encoding='utf-8') as fout:
+        imgs_lists=get_image_file_list(infer_imgs, infer_list=infer_list)
+        for file in tqdm(imgs_lists,desc='推理中：：',total=len(imgs_lists)):
+            # logger.info("infer_img: {}".format(file))
             with open(file, "rb") as f:
                 img = f.read()
                 data = {"image": img}
@@ -188,7 +190,7 @@ def main():
                     info = post_result[0][0] + "\t" + str(post_result[0][1])
 
             if info is not None:
-                logger.info("\t result: {}".format(info))
+                # logger.info("\t result: {}".format(info))
                 fout.write(file + "\t" + info + "\n")
     logger.info("success!")
 

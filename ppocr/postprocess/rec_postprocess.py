@@ -162,7 +162,8 @@ class BaseRecLabelDecode(object):
                 conf_list = [0]
 
             text = "".join(char_list)
-
+            text=text.replace(' ','')
+            text=text.upper()
             if self.reverse:  # for arabic rec
                 text = self.pred_reverse(text)
 
